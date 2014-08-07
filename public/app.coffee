@@ -86,9 +86,11 @@ class FlowBar extends View
     diff = word_count - @count
     if diff < 0
       diff = 0
+    if diff > 28
+      diff = 28
     @bar.html("")
-    for i in [0..diff*3]
-      @bar.append("-")
+    for i in [0...diff*3]
+      @bar.append("<li class='bar'>&nbsp;</li>")
     @count = word_count
 
 $('document').ready ->
