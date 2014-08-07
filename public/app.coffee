@@ -4,11 +4,14 @@ class Editor extends View
       @div class: "document", =>
         @textarea class: "editor", keydown: 'update', outlet: "text"
       @div class: "document", =>
+        @subview 'flow_bar', new FlowBar
+      @div class: "document", =>
         @subview 'hinter', new Hinter
         @subview 'common_words', new CommonWords
         @subview 'dash', new Dash
 
   initialize: (params) ->
+    setInterval((()=>@flow_bar.update(@text.val())), 3000)
 
   update: (args) ->
     content = @text.val()
@@ -70,6 +73,23 @@ class CommonWords extends View
       for [word,n] in best
         @words.append("<li><b>#{word}:</b><span>#{n}</span></li>")
 
+class FlowBar extends View
+  @content: (params) ->
+    @div class: "flow_bar", =>
+      @ol outlet: "bar"
+
+  initialize: (params) ->
+    @count = 0
+
+  update: (text) ->
+    word_count = text.length
+    diff = word_count - @count
+    if diff < 0
+      diff = 0
+    @bar.html("")
+    for i in [0..diff*3]
+      @bar.append("-")
+    @count = word_count
 
 $('document').ready ->
   $('body').append(new Editor)
